@@ -35,7 +35,7 @@ exports.createProject = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
       }
 
-      const { title, description, link, adminOnly } = req.body;
+      const { title, description, link, technology, note, backendLink, adminOnly } = req.body;
       const imageUrl = req.file ? req.file.filename : null;
       // const imageUrl = req.file ? {
       //   data: req.file.buffer,
@@ -48,6 +48,9 @@ exports.createProject = async (req, res) => {
           description,
           link,
           imageUrl,
+          technology,
+          note,
+          backendLink,
           adminOnly
 
         });
@@ -104,7 +107,7 @@ exports.updateProjectById = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
       }
 
-      const { title, description, link, adminOnly } = req.body;
+      const { title, description, link, technology, note, backendLink, adminOnly } = req.body;
       const imageUrl = req.file ? req.file.filename : null;
       // const imageUrl = req.file ? {
       //   data: req.file.buffer,
@@ -118,6 +121,9 @@ exports.updateProjectById = async (req, res) => {
           description,
           link,
           imageUrl,
+          technology,
+          note,
+          backendLink,
           adminOnly
         }, { new: true });
         if (!updatedProject) {

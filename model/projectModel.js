@@ -16,6 +16,15 @@ const projectSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true,
+  },
+  technology: {
+    type: String,
+  },
+  note: {
+    type: String,
+  },
+  backendLink: {
+    type: String,
 
     // data: Buffer, // Store image data as Buffer
     // contentType: String // Store content type of the image
