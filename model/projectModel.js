@@ -15,7 +15,7 @@ const projectSchema = new mongoose.Schema({
   },
   imageUrl: {
     type: String,
-    required: true,
+    required: false,
   },
   technology: {
     type: String,

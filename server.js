@@ -72,6 +72,9 @@ app.use(express.static(
   path.join(__dirname, '..', 'frontend', 'dist')
 ));
 
+app.use('/uploads', express.static(path.join(__dirname, 'public')));
+
+
 // ✅ Handle React routing
 app.get('*', (req, res) => {
   res.sendFile(
