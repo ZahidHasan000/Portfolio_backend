@@ -22,7 +22,8 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173' // Allow requests only from this origin
+  origin: 'https://portfolio-frontend-lurr.onrender.com' // Allow requests only from this origin
+  // origin: 'http://localhost:5173' // Allow requests only from this origin
 }));
 
 
@@ -67,12 +68,23 @@ app.use((err, req, res, next) => {
 
 app.use(express.static('public'));
 
-//Serving static files
-app.use(express.static(path.join(__dirname, '/frontend/dist')));
-// app.use(express.static(path.join(__dirname, '/frontend/src')));
+app.use(express.static(
+  path.join(__dirname, '..', 'frontend', 'dist')
+));
 
-//render e-comerce-frontend for any path
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/frontend/dist/index.html')))
+// ✅ Handle React routing
+app.get('*', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, '..', 'frontend', 'dist', 'index.html')
+  );
+});
+
+//Serving static files
+// app.use(express.static(path.join(__dirname, '/frontend/dist')));
+// // app.use(express.static(path.join(__dirname, '/frontend/src')));
+
+// //render e-comerce-frontend for any path
+// app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/frontend/dist/index.html')))
 // app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/frontend/src/index.html')))
 
 
