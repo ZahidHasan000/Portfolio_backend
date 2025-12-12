@@ -137,7 +137,7 @@ app.set('trust proxy', 1);
 
 // ✅ CORS Configuration
 const allowedOrigins = [
-  'https://portfolio-frontend-lurr.onrender.com',
+  // 'https://portfolio-frontend-lurr.onrender.com',
   'http://localhost:5173',
   // 'http://localhost:5000'
 ];
@@ -186,8 +186,8 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use('/api', limiter);
 app.use('/api', projectRouter);
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'public')));
+// // Serve uploaded files
+// app.use('/uploads', express.static(path.join(__dirname, 'public')));
 
 // Serve React app
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));

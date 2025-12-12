@@ -1,7 +1,7 @@
 const Project = require('../model/projectModel');
 
 const path = require("path");
-const multer = require('multer');
+// const multer = require('multer');
 const fs = require('fs');
 
 // const uploadDir = path.join(__dirname, '../public');
@@ -18,32 +18,32 @@ const fs = require('fs');
 //   }
 // });
 
-const uploadDir = path.join(__dirname, '../public');
+// const uploadDir = path.join(__dirname, '../public');
 
 // Make sure the directory exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir, { recursive: true });
+// }
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename(req, file, cb) {
-    cb(null, Date.now() + '_' + file.originalname);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination(req, file, cb) {
+//     cb(null, uploadDir);
+//   },
+//   filename(req, file, cb) {
+//     cb(null, Date.now() + '_' + file.originalname);
+//   }
+// });
 
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // ✅ 5MB
-  fileFilter(req, file, cb) {
-    if (!file.mimetype.startsWith('image/')) {
-      cb(new Error('Only images allowed'), false);
-    }
-    cb(null, true);
-  }
-}).single('imageUrl');
+// const upload = multer({
+//   storage,
+//   limits: { fileSize: 5 * 1024 * 1024 }, // ✅ 5MB
+//   fileFilter(req, file, cb) {
+//     if (!file.mimetype.startsWith('image/')) {
+//       cb(new Error('Only images allowed'), false);
+//     }
+//     cb(null, true);
+//   }
+// }).single('imageUrl');
 
 // // Image upload
 // const storage = multer.diskStorage({
@@ -107,29 +107,47 @@ const upload = multer({
 //   }
 // };
 
+// exports.createProject = async (req, res) => {
+//   upload(req, res, async (err) => {
+//     if (err) {
+//       return res.status(400).json({ message: err.message });
+//     }
+
+//     try {
+//       const project = await Project.create({
+//         title: req.body.title,
+//         description: req.body.description,
+//         link: req.body.link,
+//         technology: req.body.technology,
+//         note: req.body.note,
+//         backendLink: req.body.backendLink,
+//         adminOnly: req.body.adminOnly,
+//         // imageUrl: req.file ? `/uploads/${req.file.filename}` : null
+//       });
+
+//       res.status(201).json(project);
+//     } catch (error) {
+//       res.status(500).json({ message: error.message });
+//     }
+//   });
+// };
+
 exports.createProject = async (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    }
+  try {
+    const project = await Project.create({
+      title: req.body.title,
+      description: req.body.description,
+      link: req.body.link,
+      technology: req.body.technology,
+      note: req.body.note,
+      backendLink: req.body.backendLink,
+      adminOnly: req.body.adminOnly
+    });
 
-    try {
-      const project = await Project.create({
-        title: req.body.title,
-        description: req.body.description,
-        link: req.body.link,
-        technology: req.body.technology,
-        note: req.body.note,
-        backendLink: req.body.backendLink,
-        adminOnly: req.body.adminOnly,
-        imageUrl: req.file ? `/uploads/${req.file.filename}` : null
-      });
-
-      res.status(201).json(project);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
+    res.status(201).json(project);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 
@@ -162,10 +180,6 @@ exports.getProjectById = async (req, res) => {
 };
 
 exports.updateProjectById = async (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    }
 
     const updateData = {
       title: req.body.title,
@@ -177,9 +191,9 @@ exports.updateProjectById = async (req, res) => {
       adminOnly: req.body.adminOnly
     };
 
-    if (req.file) {
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
-    }
+    // if (req.file) {
+    //   updateData.imageUrl = `/uploads/${req.file.filename}`;
+    // }
 
     const project = await Project.findByIdAndUpdate(
       req.params.projectId,
@@ -188,8 +202,37 @@ exports.updateProjectById = async (req, res) => {
     );
 
     res.json(project);
-  });
 };
+
+// exports.updateProjectById = async (req, res) => {
+//   upload(req, res, async (err) => {
+//     if (err) {
+//       return res.status(400).json({ message: err.message });
+//     }
+
+//     const updateData = {
+//       title: req.body.title,
+//       description: req.body.description,
+//       link: req.body.link,
+//       technology: req.body.technology,
+//       note: req.body.note,
+//       backendLink: req.body.backendLink,
+//       adminOnly: req.body.adminOnly
+//     };
+
+//     // if (req.file) {
+//     //   updateData.imageUrl = `/uploads/${req.file.filename}`;
+//     // }
+
+//     const project = await Project.findByIdAndUpdate(
+//       req.params.projectId,
+//       updateData,
+//       { new: true }
+//     );
+
+//     res.json(project);
+//   });
+// };
 
 // Controller function to update a project by ID
 // exports.updateProjectById = async (req, res) => {
@@ -248,11 +291,11 @@ exports.deleteProjectById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
 
-    // Delete the associated image file from the public folder
-    if (deletedProject.imageUrl) {
-      const imagePath = path.join(__dirname, '../public', deletedProject.imageUrl);
-      fs.unlinkSync(imagePath);
-    }
+    // // Delete the associated image file from the public folder
+    // if (deletedProject.imageUrl) {
+    //   const imagePath = path.join(__dirname, '../public', deletedProject.imageUrl);
+    //   fs.unlinkSync(imagePath);
+    // }
 
     res.status(200).json({ success: true, message: 'Project deleted successfully' });
   } catch (error) {

@@ -13,10 +13,10 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  imageUrl: {
-    type: String,
-    required: false,
-  },
+  // imageUrl: {
+  //   type: String,
+  //   required: false,
+  // },
   technology: {
     type: String,
   },
